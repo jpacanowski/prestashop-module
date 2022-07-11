@@ -27,23 +27,26 @@ class MyFirstModule extends Module
             $this->warning = $this->l('No name provided');
     }
 
-    public function install()
+    public function install(): bool
     {
         return parent::install()
             && $this->registerHook('displayHome')
             && Configuration::updateValue('licznik', 0);
     }
 
-    public function uninstall()
+    public function uninstall(): bool
     {
-        Configuration::deleteByName('licznik');
-        return parent::uninstall();
+        return parent::uninstall()
+            && Configuration::deleteByName('licznik');
     }
 
     public function hookDisplayHome(array $params)
     {
         if(Tools::getValue('controller') == 'index') {
-            Configuration::updateValue('licznik', Configuration::get('licznik') + 1);
+
+            Configuration::updateValue('licznik',
+                Configuration::get('licznik') + 1);
+
             return 'Wejścia: ' . Configuration::get('licznik');
         }
     }
